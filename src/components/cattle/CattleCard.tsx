@@ -1,9 +1,9 @@
 import React from 'react';
 import { Calendar, Weight, MapPin } from 'lucide-react';
-import type { Cattle } from '../../types';
+import type { Animal } from '../../types';
 
 interface CattleCardProps {
-  cattle: Cattle;
+  cattle: Animal;
 }
 
 const statusColors = {
@@ -26,7 +26,7 @@ export default function CattleCard({ cattle }: CattleCardProps) {
       <div className="flex justify-between items-start mb-4">
         <div>
           <h3 className="text-lg font-semibold">{cattle.tag_number}</h3>
-          <p className="text-gray-600">{cattle.breed}</p>
+          <p className="text-gray-600">{cattle.breed} - {cattle.species}</p>
         </div>
         <span className={`px-2 py-1 rounded-full text-sm ${statusColors[cattle.status]}`}>
           {statusLabels[cattle.status]}

@@ -8,6 +8,16 @@ export interface Cattle {
   location: string;
 }
 
+export interface Animal extends Cattle {
+  /**
+   * Tipo de animal que se maneja. Al extender la
+   * interface de Cattle permite reutilizar los
+   * mismos campos para bovinos, ovinos, porcinos
+   * u otras especies.
+   */
+  species: 'bovine' | 'ovine' | 'porcine' | 'caprine' | 'equine' | 'other';
+}
+
 export interface Pasture {
   id: string;
   name: string;

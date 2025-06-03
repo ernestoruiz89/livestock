@@ -1,10 +1,11 @@
 import React from 'react';
 import { Search, Filter, Plus } from 'lucide-react';
-import type { Cattle } from '../../types';
-import CattleCard from './CattleCard';
+import type { Animal } from '../../types';
+import CattleCard from './CattleCard'; // reutilizamos el diseño para cualquier animal
+import { getDocList } from '../../api/erpnext';
 import ViewToggle from '../ViewToggle';
 
-const MOCK_CATTLE: Cattle[] = [
+const MOCK_CATTLE: Animal[] = [
   {
     id: '1',
     tag_number: 'BOV-001',
@@ -12,7 +13,8 @@ const MOCK_CATTLE: Cattle[] = [
     birth_date: '2022-06-15',
     weight: 520,
     status: 'healthy',
-    location: 'Parcela 1'
+    location: 'Parcela 1',
+    species: 'bovine'
   },
   {
     id: '2',
@@ -21,7 +23,8 @@ const MOCK_CATTLE: Cattle[] = [
     birth_date: '2022-04-20',
     weight: 480,
     status: 'pregnant',
-    location: 'Parcela 2'
+    location: 'Parcela 2',
+    species: 'bovine'
   },
   {
     id: '3',
@@ -30,7 +33,8 @@ const MOCK_CATTLE: Cattle[] = [
     birth_date: '2022-08-10',
     weight: 495,
     status: 'lactating',
-    location: 'Parcela 1'
+    location: 'Parcela 1',
+    species: 'bovine'
   }
 ];
 
@@ -43,10 +47,17 @@ const statusLabels = {
 
 export default function CattleList() {
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [statusFilter, setStatusFilter] = React.useState<Cattle['status'] | 'all'>('all');
+  const [statusFilter, setStatusFilter] = React.useState<Animal['status'] | 'all'>('all');
   const [view, setView] = React.useState<'grid' | 'list'>('grid');
+  const [animals, setAnimals] = React.useState<Animal[]>(MOCK_CATTLE);
 
-  const filteredCattle = MOCK_CATTLE.filter(cattle => {
+  React.useEffect(() => {
+    getDocList<Animal>('Animal').then(setAnimals).catch(() => {
+      // si la petición falla se mantienen los datos locales
+    });
+  }, []);
+
+  const filteredCattle = animals.filter(cattle => {
     const matchesSearch = cattle.tag_number.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          cattle.breed.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = statusFilter === 'all' || cattle.status === statusFilter;
@@ -83,7 +94,7 @@ export default function CattleList() {
           <select
             className="input !w-auto"
             value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value as Cattle['status'] | 'all')}
+            onChange={(e) => setStatusFilter(e.target.value as Animal['status'] | 'all')}
           >
             <option value="all">Todos los estados</option>
             <option value="healthy">Saludable</option>
