@@ -5,6 +5,7 @@ import CattleList from './components/cattle/CattleList';
 import PastureList from './components/pastures/PastureList';
 import FeedingList from './components/feeding/FeedingList';
 import HealthList from './components/health/HealthList';
+import ActivityList from './components/activities/ActivityList';
 
 function App() {
   const [currentView, setCurrentView] = React.useState('dashboard');
@@ -18,6 +19,7 @@ function App() {
         {currentView === 'pastures' && <PastureList />}
         {currentView === 'feeding' && <FeedingList />}
         {currentView === 'health' && <HealthList />}
+        {currentView === 'activities' && <ActivityList />}
       </main>
     </div>
   );

@@ -1,56 +1,32 @@
 import React from 'react';
 import { Search, Plus } from 'lucide-react';
-import type { Pasture } from '../../types';
-import PastureCard from './PastureCard';
+import type { Activity } from '../../types';
+import ActivityCard from './ActivityCard';
 import ViewToggle from '../ViewToggle';
 
-const MOCK_PASTURES: Pasture[] = [
-  {
-    id: '1',
-    name: 'Parcela Norte',
-    area: 5.5,
-    status: 'active',
-    last_rotation: '2024-03-01',
-    grass_type: 'Brachiaria',
-    capacity: 25
-  },
-  {
-    id: '2',
-    name: 'Parcela Este',
-    area: 4.2,
-    status: 'resting',
-    last_rotation: '2024-02-15',
-    grass_type: 'Pangola',
-    capacity: 20
-  },
-  {
-    id: '3',
-    name: 'Parcela Sur',
-    area: 6.0,
-    status: 'maintenance',
-    last_rotation: '2024-03-10',
-    grass_type: 'Estrella',
-    capacity: 30
-  }
+const MOCK_ACTIVITIES: Activity[] = [
+  { id: '1', title: 'Alimentación mañana', date: '2024-03-25', type: 'feeding' },
+  { id: '2', title: 'Rotación Parcela 4', date: '2024-03-26', type: 'rotation' },
+  { id: '3', title: 'Pesaje mensual', date: '2024-03-28', type: 'weighing' },
 ];
 
-export default function PastureList() {
+export default function ActivityList() {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [view, setView] = React.useState<'grid' | 'list'>('grid');
 
-  const filteredPastures = MOCK_PASTURES.filter(pasture =>
-    pasture.name.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredActivities = MOCK_ACTIVITIES.filter((activity) =>
+    activity.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Gestión de Parcelas</h1>
+        <h1 className="text-2xl font-bold">Programación de Actividades</h1>
         <div className="flex gap-4">
           <ViewToggle view={view} onViewChange={setView} />
           <button className="btn btn-primary flex items-center">
             <Plus className="w-4 h-4 mr-2" />
-            Nueva Parcela
+            Nueva Actividad
           </button>
         </div>
       </div>
@@ -60,7 +36,7 @@ export default function PastureList() {
           <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
           <input
             type="text"
-            placeholder="Buscar parcela..."
+            placeholder="Buscar actividad..."
             className="input pl-10"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -70,8 +46,8 @@ export default function PastureList() {
 
       {view === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredPastures.map((pasture) => (
-            <PastureCard key={pasture.id} pasture={pasture} />
+          {filteredActivities.map((activity) => (
+            <ActivityCard key={activity.id} activity={activity} />
           ))}
         </div>
       ) : (
@@ -80,16 +56,13 @@ export default function PastureList() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Nombre
+                  Actividad
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Estado
+                  Fecha
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Área
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Capacidad
+                  Tipo
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Acciones
@@ -97,12 +70,11 @@ export default function PastureList() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {filteredPastures.map((pasture) => (
-                <tr key={pasture.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4">{pasture.name}</td>
-                  <td className="px-6 py-4">{pasture.status}</td>
-                  <td className="px-6 py-4">{pasture.area} ha</td>
-                  <td className="px-6 py-4">{pasture.capacity}</td>
+              {filteredActivities.map((activity) => (
+                <tr key={activity.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4">{activity.title}</td>
+                  <td className="px-6 py-4">{activity.date}</td>
+                  <td className="px-6 py-4">{activity.type}</td>
                   <td className="px-6 py-4 text-sm text-gray-500">
                     <div className="flex space-x-2">
                       <button className="text-blue-600 hover:text-blue-900">Ver</button>
@@ -116,9 +88,9 @@ export default function PastureList() {
         </div>
       )}
 
-      {filteredPastures.length === 0 && (
+      {filteredActivities.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-gray-500">No se encontraron parcelas.</p>
+          <p className="text-gray-500">No se encontraron actividades programadas.</p>
         </div>
       )}
     </div>
