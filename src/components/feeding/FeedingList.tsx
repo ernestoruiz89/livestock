@@ -5,6 +5,7 @@ import FeedingCard from './FeedingCard';
 import ViewToggle from '../ViewToggle';
 import FeedingForm from './forms/FeedingForm';
 import usePersistedView from '../../hooks/usePersistedView';
+import usePersistedState from '../../hooks/usePersistedState';
 
 const MOCK_FEEDING: FeedingRecord[] = [
   {
@@ -28,9 +29,9 @@ const MOCK_FEEDING: FeedingRecord[] = [
 ];
 
 export default function FeedingList() {
-  const [searchTerm, setSearchTerm] = React.useState('');
-  const [fromDate, setFromDate] = React.useState('');
-  const [toDate, setToDate] = React.useState('');
+  const [searchTerm, setSearchTerm] = usePersistedState('feeding-search', '');
+  const [fromDate, setFromDate] = usePersistedState('feeding-from', '');
+  const [toDate, setToDate] = usePersistedState('feeding-to', '');
   const [view, setView] = usePersistedView('feeding-view', 'grid');
   const [showForm, setShowForm] = React.useState(false);
   const [selected, setSelected] = React.useState<FeedingRecord | undefined>();
@@ -93,6 +94,16 @@ export default function FeedingList() {
             onChange={(e) => setToDate(e.target.value)}
           />
         </div>
+        <button
+          className="btn btn-secondary self-start md:ml-auto"
+          onClick={() => {
+            setSearchTerm('');
+            setFromDate('');
+            setToDate('');
+          }}
+        >
+          Borrar filtros
+        </button>
       </div>
 
       {view === 'grid' ? (

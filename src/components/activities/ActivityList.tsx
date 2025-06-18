@@ -5,6 +5,7 @@ import ActivityCard from './ActivityCard';
 import ViewToggle from '../ViewToggle';
 import ActivityForm from './forms/ActivityForm';
 import usePersistedView from '../../hooks/usePersistedView';
+import usePersistedState from '../../hooks/usePersistedState';
 
 const MOCK_ACTIVITIES: Activity[] = [
   { id: '1', title: 'Alimentación mañana', date: '2024-03-25', type: 'feeding' },
@@ -13,9 +14,9 @@ const MOCK_ACTIVITIES: Activity[] = [
 ];
 
 export default function ActivityList() {
-  const [searchTerm, setSearchTerm] = React.useState('');
-  const [fromDate, setFromDate] = React.useState('');
-  const [toDate, setToDate] = React.useState('');
+  const [searchTerm, setSearchTerm] = usePersistedState('activity-search', '');
+  const [fromDate, setFromDate] = usePersistedState('activity-from', '');
+  const [toDate, setToDate] = usePersistedState('activity-to', '');
   const [view, setView] = usePersistedView('activities-view', 'grid');
   const [showForm, setShowForm] = React.useState(false);
   const [selected, setSelected] = React.useState<Activity | undefined>();
@@ -80,6 +81,16 @@ export default function ActivityList() {
             onChange={(e) => setToDate(e.target.value)}
           />
         </div>
+        <button
+          className="btn btn-secondary self-start md:ml-auto"
+          onClick={() => {
+            setSearchTerm('');
+            setFromDate('');
+            setToDate('');
+          }}
+        >
+          Borrar filtros
+        </button>
       </div>
 
       {view === 'grid' ? (

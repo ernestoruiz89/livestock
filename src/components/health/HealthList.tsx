@@ -5,6 +5,7 @@ import HealthCard from './HealthCard';
 import ViewToggle from '../ViewToggle';
 import HealthForm from './forms/HealthForm';
 import usePersistedView from '../../hooks/usePersistedView';
+import usePersistedState from '../../hooks/usePersistedState';
 
 const MOCK_HEALTH: HealthRecord[] = [
   {
@@ -26,9 +27,9 @@ const MOCK_HEALTH: HealthRecord[] = [
 ];
 
 export default function HealthList() {
-  const [searchTerm, setSearchTerm] = React.useState('');
-  const [fromDate, setFromDate] = React.useState('');
-  const [toDate, setToDate] = React.useState('');
+  const [searchTerm, setSearchTerm] = usePersistedState('health-search', '');
+  const [fromDate, setFromDate] = usePersistedState('health-from', '');
+  const [toDate, setToDate] = usePersistedState('health-to', '');
   const [view, setView] = usePersistedView('health-view', 'grid');
   const [showForm, setShowForm] = React.useState(false);
   const [selected, setSelected] = React.useState<HealthRecord | undefined>();
@@ -91,6 +92,16 @@ export default function HealthList() {
             onChange={(e) => setToDate(e.target.value)}
           />
         </div>
+        <button
+          className="btn btn-secondary self-start md:ml-auto"
+          onClick={() => {
+            setSearchTerm('');
+            setFromDate('');
+            setToDate('');
+          }}
+        >
+          Borrar filtros
+        </button>
       </div>
 
       {view === 'grid' ? (

@@ -5,6 +5,7 @@ import CattleCard from './CattleCard'; // reutilizamos el diseño para cualquier
 import { getDocList } from '../../api/erpnext';
 import ViewToggle from '../ViewToggle';
 import usePersistedView from '../../hooks/usePersistedView';
+import usePersistedState from '../../hooks/usePersistedState';
 import CattleForm from './forms/CattleForm';
 
 const MOCK_CATTLE: Animal[] = [
@@ -48,8 +49,8 @@ const statusLabels = {
 };
 
 export default function CattleList() {
-  const [searchTerm, setSearchTerm] = React.useState('');
-  const [statusFilter, setStatusFilter] = React.useState<Animal['status'] | 'all'>('all');
+  const [searchTerm, setSearchTerm] = usePersistedState('cattle-search', '');
+  const [statusFilter, setStatusFilter] = usePersistedState<Animal['status'] | 'all'>('cattle-status', 'all');
   const [view, setView] = usePersistedView('cattle-view', 'grid');
   const [animals, setAnimals] = React.useState<Animal[]>(MOCK_CATTLE);
   const [showForm, setShowForm] = React.useState(false);
@@ -115,6 +116,15 @@ export default function CattleList() {
             <option value="lactating">Lactando</option>
           </select>
         </div>
+        <button
+          className="btn btn-secondary self-start md:ml-auto"
+          onClick={() => {
+            setSearchTerm('');
+            setStatusFilter('all');
+          }}
+        >
+          Borrar filtros
+        </button>
       </div>
 
       {view === 'grid' ? (
