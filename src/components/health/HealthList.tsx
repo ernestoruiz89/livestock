@@ -36,8 +36,20 @@ export default function HealthList() {
   const [readOnly, setReadOnly] = React.useState(false);
   const [records, setRecords] = React.useState<HealthRecord[]>(MOCK_HEALTH);
 
-  const filteredRecords = records.filter(record => {
-    const matchesSearch = record.cattle_id.toLowerCase().includes(searchTerm.toLowerCase());
+  const typeLabels: Record<HealthRecord['type'], string> = {
+    vaccination: 'Vacunación',
+    treatment: 'Tratamiento',
+    'check-up': 'Revisión'
+  };
+
+  const filteredRecords = records.filter((record) => {
+    const search = searchTerm.toLowerCase();
+    const matchesSearch =
+      record.cattle_id.toLowerCase().includes(search) ||
+      record.type.toLowerCase().includes(search) ||
+      typeLabels[record.type].toLowerCase().includes(search) ||
+      record.performed_by.toLowerCase().includes(search) ||
+      record.description.toLowerCase().includes(search);
     const matchesFrom = !fromDate || record.date >= fromDate;
     const matchesTo = !toDate || record.date <= toDate;
     const matchesDate = matchesFrom && matchesTo;
@@ -69,7 +81,7 @@ export default function HealthList() {
           <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
           <input
             type="text"
-            placeholder="Buscar por ID de animal..."
+            placeholder="Buscar por ID, tipo, descripción..."
             className="input pl-10"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
