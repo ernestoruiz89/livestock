@@ -4,6 +4,7 @@ import type { Activity } from '../../types';
 import ActivityCard from './ActivityCard';
 import ViewToggle from '../ViewToggle';
 import ActivityForm from './forms/ActivityForm';
+import usePersistedView from '../../hooks/usePersistedView';
 
 const MOCK_ACTIVITIES: Activity[] = [
   { id: '1', title: 'Alimentación mañana', date: '2024-03-25', type: 'feeding' },
@@ -13,7 +14,7 @@ const MOCK_ACTIVITIES: Activity[] = [
 
 export default function ActivityList() {
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [view, setView] = React.useState<'grid' | 'list'>('grid');
+  const [view, setView] = usePersistedView('activities-view', 'grid');
   const [showForm, setShowForm] = React.useState(false);
   const [selected, setSelected] = React.useState<Activity | undefined>();
   const [readOnly, setReadOnly] = React.useState(false);

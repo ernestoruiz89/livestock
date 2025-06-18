@@ -4,6 +4,7 @@ import type { FeedingRecord } from '../../types';
 import FeedingCard from './FeedingCard';
 import ViewToggle from '../ViewToggle';
 import FeedingForm from './forms/FeedingForm';
+import usePersistedView from '../../hooks/usePersistedView';
 
 const MOCK_FEEDING: FeedingRecord[] = [
   {
@@ -29,7 +30,7 @@ const MOCK_FEEDING: FeedingRecord[] = [
 export default function FeedingList() {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [selectedDate, setSelectedDate] = React.useState('');
-  const [view, setView] = React.useState<'grid' | 'list'>('grid');
+  const [view, setView] = usePersistedView('feeding-view', 'grid');
   const [showForm, setShowForm] = React.useState(false);
   const [selected, setSelected] = React.useState<FeedingRecord | undefined>();
   const [readOnly, setReadOnly] = React.useState(false);

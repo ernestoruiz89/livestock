@@ -4,6 +4,7 @@ import type { Pasture } from '../../types';
 import PastureCard from './PastureCard';
 import ViewToggle from '../ViewToggle';
 import PastureForm from './forms/PastureForm';
+import usePersistedView from '../../hooks/usePersistedView';
 
 const MOCK_PASTURES: Pasture[] = [
   {
@@ -37,7 +38,7 @@ const MOCK_PASTURES: Pasture[] = [
 
 export default function PastureList() {
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [view, setView] = React.useState<'grid' | 'list'>('grid');
+  const [view, setView] = usePersistedView('pastures-view', 'grid');
   const [showForm, setShowForm] = React.useState(false);
   const [selected, setSelected] = React.useState<Pasture | undefined>();
   const [readOnly, setReadOnly] = React.useState(false);
