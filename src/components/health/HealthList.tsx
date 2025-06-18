@@ -85,7 +85,20 @@ export default function HealthList() {
       {view === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredRecords.map((record) => (
-            <HealthCard key={record.id} record={record} />
+            <HealthCard
+              key={record.id}
+              record={record}
+              onView={(data) => {
+                setSelected(data);
+                setReadOnly(true);
+                setShowForm(true);
+              }}
+              onEdit={(data) => {
+                setSelected(data);
+                setReadOnly(false);
+                setShowForm(true);
+              }}
+            />
           ))}
         </div>
       ) : (

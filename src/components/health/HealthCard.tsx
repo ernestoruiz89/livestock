@@ -4,6 +4,8 @@ import type { HealthRecord } from '../../types';
 
 interface HealthCardProps {
   record: HealthRecord;
+  onView?: (record: HealthRecord) => void;
+  onEdit?: (record: HealthRecord) => void;
 }
 
 const typeColors = {
@@ -18,7 +20,7 @@ const typeLabels = {
   'check-up': 'Revisión'
 };
 
-export default function HealthCard({ record }: HealthCardProps) {
+export default function HealthCard({ record, onView, onEdit }: HealthCardProps) {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
       <div className="flex justify-between items-start mb-4">
@@ -44,8 +46,18 @@ export default function HealthCard({ record }: HealthCardProps) {
       </div>
 
       <div className="mt-4 pt-4 border-t flex justify-end space-x-2">
-        <button className="btn btn-secondary text-sm">Ver Detalles</button>
-        <button className="btn btn-primary text-sm">Editar</button>
+        <button
+          className="btn btn-secondary text-sm"
+          onClick={() => onView?.(record)}
+        >
+          Ver Detalles
+        </button>
+        <button
+          className="btn btn-primary text-sm"
+          onClick={() => onEdit?.(record)}
+        >
+          Editar
+        </button>
       </div>
     </div>
   );
