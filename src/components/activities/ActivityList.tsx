@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Plus } from 'lucide-react';
+import { Search, Plus, Calendar } from 'lucide-react';
 import type { Activity } from '../../types';
 import ActivityCard from './ActivityCard';
 import ViewToggle from '../ViewToggle';
@@ -14,15 +14,20 @@ const MOCK_ACTIVITIES: Activity[] = [
 
 export default function ActivityList() {
   const [searchTerm, setSearchTerm] = React.useState('');
+  const [selectedDate, setSelectedDate] = React.useState('');
   const [view, setView] = usePersistedView('activities-view', 'grid');
   const [showForm, setShowForm] = React.useState(false);
   const [selected, setSelected] = React.useState<Activity | undefined>();
   const [readOnly, setReadOnly] = React.useState(false);
   const [activities, setActivities] = React.useState<Activity[]>(MOCK_ACTIVITIES);
 
-  const filteredActivities = activities.filter((activity) =>
-    activity.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredActivities = activities.filter((activity) => {
+    const matchesSearch = activity.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesDate = !selectedDate || activity.date === selectedDate;
+    return matchesSearch && matchesDate;
+  });
 
   return (
     <div className="p-6">
@@ -44,7 +49,7 @@ export default function ActivityList() {
         </div>
       </div>
 
-      <div className="flex mb-6">
+      <div className="flex flex-col md:flex-row gap-4 mb-6">
         <div className="flex-1 relative">
           <Search className="absolute left-3 top-2.5 h-5 w-5 text-gray-400" />
           <input
@@ -53,6 +58,16 @@ export default function ActivityList() {
             className="input pl-10"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <Calendar className="h-5 w-5 text-gray-500" />
+          <input
+            type="date"
+            className="input !w-auto"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
           />
         </div>
       </div>
