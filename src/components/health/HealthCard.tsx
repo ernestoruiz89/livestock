@@ -26,7 +26,7 @@ export default function HealthCard({ record, onView, onEdit }: HealthCardProps) 
       <div className="flex justify-between items-start mb-4">
         <div>
           <h3 className="text-lg font-semibold">{record.cattle_id}</h3>
-          <p className="text-gray-600">{new Date(record.date).toLocaleDateString()}</p>
+          <p className="text-gray-600">{new Date(record.date + 'T00:00:00').toLocaleDateString()}</p>
         </div>
         <span className={`px-2 py-1 rounded-full text-sm ${typeColors[record.type]}`}>
           {typeLabels[record.type]}
