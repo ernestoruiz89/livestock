@@ -5,6 +5,7 @@ import PastureCard from './PastureCard';
 import ViewToggle from '../ViewToggle';
 import PastureForm from './forms/PastureForm';
 import usePersistedView from '../../hooks/usePersistedView';
+import usePersistedState from '../../hooks/usePersistedState';
 
 const MOCK_PASTURES: Pasture[] = [
   {
@@ -37,7 +38,7 @@ const MOCK_PASTURES: Pasture[] = [
 ];
 
 export default function PastureList() {
-  const [searchTerm, setSearchTerm] = React.useState('');
+  const [searchTerm, setSearchTerm] = usePersistedState('pasture-search', '');
   const [view, setView] = usePersistedView('pastures-view', 'grid');
   const [showForm, setShowForm] = React.useState(false);
   const [selected, setSelected] = React.useState<Pasture | undefined>();
@@ -79,6 +80,12 @@ export default function PastureList() {
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
+        <button
+          className="btn btn-secondary ml-2"
+          onClick={() => setSearchTerm('')}
+        >
+          Borrar filtros
+        </button>
       </div>
 
       {view === 'grid' ? (
