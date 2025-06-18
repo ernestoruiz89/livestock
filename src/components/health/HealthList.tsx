@@ -27,7 +27,8 @@ const MOCK_HEALTH: HealthRecord[] = [
 
 export default function HealthList() {
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [selectedDate, setSelectedDate] = React.useState('');
+  const [fromDate, setFromDate] = React.useState('');
+  const [toDate, setToDate] = React.useState('');
   const [view, setView] = usePersistedView('health-view', 'grid');
   const [showForm, setShowForm] = React.useState(false);
   const [selected, setSelected] = React.useState<HealthRecord | undefined>();
@@ -36,7 +37,9 @@ export default function HealthList() {
 
   const filteredRecords = records.filter(record => {
     const matchesSearch = record.cattle_id.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesDate = !selectedDate || record.date === selectedDate;
+    const matchesFrom = !fromDate || record.date >= fromDate;
+    const matchesTo = !toDate || record.date <= toDate;
+    const matchesDate = matchesFrom && matchesTo;
     return matchesSearch && matchesDate;
   });
 
@@ -77,8 +80,15 @@ export default function HealthList() {
           <input
             type="date"
             className="input !w-auto"
-            value={selectedDate}
-            onChange={(e) => setSelectedDate(e.target.value)}
+            value={fromDate}
+            onChange={(e) => setFromDate(e.target.value)}
+          />
+          <span className="mx-1">-</span>
+          <input
+            type="date"
+            className="input !w-auto"
+            value={toDate}
+            onChange={(e) => setToDate(e.target.value)}
           />
         </div>
       </div>
