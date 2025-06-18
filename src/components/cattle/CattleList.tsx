@@ -4,6 +4,7 @@ import type { Animal } from '../../types';
 import CattleCard from './CattleCard'; // reutilizamos el diseño para cualquier animal
 import { getDocList } from '../../api/erpnext';
 import ViewToggle from '../ViewToggle';
+import CattleForm from './forms/CattleForm';
 
 const MOCK_CATTLE: Animal[] = [
   {
@@ -50,6 +51,9 @@ export default function CattleList() {
   const [statusFilter, setStatusFilter] = React.useState<Animal['status'] | 'all'>('all');
   const [view, setView] = React.useState<'grid' | 'list'>('grid');
   const [animals, setAnimals] = React.useState<Animal[]>(MOCK_CATTLE);
+  const [showForm, setShowForm] = React.useState(false);
+  const [selected, setSelected] = React.useState<Animal | undefined>();
+  const [readOnly, setReadOnly] = React.useState(false);
 
   React.useEffect(() => {
     getDocList<Animal>('Animal').then(setAnimals).catch(() => {
@@ -70,7 +74,14 @@ export default function CattleList() {
         <h1 className="text-2xl font-bold">Gestión de Ganado</h1>
         <div className="flex gap-4">
           <ViewToggle view={view} onViewChange={setView} />
-          <button className="btn btn-primary flex items-center">
+          <button
+            className="btn btn-primary flex items-center"
+            onClick={() => {
+              setSelected(undefined);
+              setReadOnly(false);
+              setShowForm(true);
+            }}
+          >
             <Plus className="w-4 h-4 mr-2" />
             Nuevo Registro
           </button>
@@ -155,8 +166,26 @@ export default function CattleList() {
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-500">
                     <div className="flex space-x-2">
-                      <button className="text-blue-600 hover:text-blue-900">Ver</button>
-                      <button className="text-green-600 hover:text-green-900">Editar</button>
+                      <button
+                        className="text-blue-600 hover:text-blue-900"
+                        onClick={() => {
+                          setSelected(cattle);
+                          setReadOnly(true);
+                          setShowForm(true);
+                        }}
+                      >
+                        Ver
+                      </button>
+                      <button
+                        className="text-green-600 hover:text-green-900"
+                        onClick={() => {
+                          setSelected(cattle);
+                          setReadOnly(false);
+                          setShowForm(true);
+                        }}
+                      >
+                        Editar
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -170,6 +199,21 @@ export default function CattleList() {
         <div className="text-center py-12">
           <p className="text-gray-500">No se encontraron registros que coincidan con los filtros.</p>
         </div>
+      )}
+
+      {showForm && (
+        <CattleForm
+          record={selected}
+          readOnly={readOnly}
+          onClose={() => setShowForm(false)}
+          onSave={(data) => {
+            if (selected) {
+              setAnimals((prev) => prev.map((a) => (a.id === data.id ? data : a)));
+            } else {
+              setAnimals((prev) => [...prev, { ...data, id: Date.now().toString() }]);
+            }
+          }}
+        />
       )}
     </div>
   );

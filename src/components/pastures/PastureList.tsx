@@ -3,6 +3,7 @@ import { Search, Plus } from 'lucide-react';
 import type { Pasture } from '../../types';
 import PastureCard from './PastureCard';
 import ViewToggle from '../ViewToggle';
+import PastureForm from './forms/PastureForm';
 
 const MOCK_PASTURES: Pasture[] = [
   {
@@ -37,8 +38,12 @@ const MOCK_PASTURES: Pasture[] = [
 export default function PastureList() {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [view, setView] = React.useState<'grid' | 'list'>('grid');
+  const [showForm, setShowForm] = React.useState(false);
+  const [selected, setSelected] = React.useState<Pasture | undefined>();
+  const [readOnly, setReadOnly] = React.useState(false);
+  const [pastures, setPastures] = React.useState<Pasture[]>(MOCK_PASTURES);
 
-  const filteredPastures = MOCK_PASTURES.filter(pasture =>
+  const filteredPastures = pastures.filter(pasture =>
     pasture.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -48,7 +53,14 @@ export default function PastureList() {
         <h1 className="text-2xl font-bold">Gestión de Parcelas</h1>
         <div className="flex gap-4">
           <ViewToggle view={view} onViewChange={setView} />
-          <button className="btn btn-primary flex items-center">
+          <button
+            className="btn btn-primary flex items-center"
+            onClick={() => {
+              setSelected(undefined);
+              setReadOnly(false);
+              setShowForm(true);
+            }}
+          >
             <Plus className="w-4 h-4 mr-2" />
             Nueva Parcela
           </button>
@@ -105,8 +117,26 @@ export default function PastureList() {
                   <td className="px-6 py-4">{pasture.capacity}</td>
                   <td className="px-6 py-4 text-sm text-gray-500">
                     <div className="flex space-x-2">
-                      <button className="text-blue-600 hover:text-blue-900">Ver</button>
-                      <button className="text-green-600 hover:text-green-900">Editar</button>
+                      <button
+                        className="text-blue-600 hover:text-blue-900"
+                        onClick={() => {
+                          setSelected(pasture);
+                          setReadOnly(true);
+                          setShowForm(true);
+                        }}
+                      >
+                        Ver
+                      </button>
+                      <button
+                        className="text-green-600 hover:text-green-900"
+                        onClick={() => {
+                          setSelected(pasture);
+                          setReadOnly(false);
+                          setShowForm(true);
+                        }}
+                      >
+                        Editar
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -120,6 +150,21 @@ export default function PastureList() {
         <div className="text-center py-12">
           <p className="text-gray-500">No se encontraron parcelas.</p>
         </div>
+      )}
+
+      {showForm && (
+        <PastureForm
+          record={selected}
+          readOnly={readOnly}
+          onClose={() => setShowForm(false)}
+          onSave={(data) => {
+            if (selected) {
+              setPastures((prev) => prev.map((p) => (p.id === data.id ? data : p)));
+            } else {
+              setPastures((prev) => [...prev, { ...data, id: Date.now().toString() }]);
+            }
+          }}
+        />
       )}
     </div>
   );

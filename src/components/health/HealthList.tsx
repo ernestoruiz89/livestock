@@ -3,6 +3,7 @@ import { Search, Plus, Calendar } from 'lucide-react';
 import type { HealthRecord } from '../../types';
 import HealthCard from './HealthCard';
 import ViewToggle from '../ViewToggle';
+import HealthForm from './forms/HealthForm';
 
 const MOCK_HEALTH: HealthRecord[] = [
   {
@@ -27,8 +28,12 @@ export default function HealthList() {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [selectedDate, setSelectedDate] = React.useState('');
   const [view, setView] = React.useState<'grid' | 'list'>('grid');
+  const [showForm, setShowForm] = React.useState(false);
+  const [selected, setSelected] = React.useState<HealthRecord | undefined>();
+  const [readOnly, setReadOnly] = React.useState(false);
+  const [records, setRecords] = React.useState<HealthRecord[]>(MOCK_HEALTH);
 
-  const filteredRecords = MOCK_HEALTH.filter(record => {
+  const filteredRecords = records.filter(record => {
     const matchesSearch = record.cattle_id.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesDate = !selectedDate || record.date === selectedDate;
     return matchesSearch && matchesDate;
@@ -40,7 +45,14 @@ export default function HealthList() {
         <h1 className="text-2xl font-bold">Registro de Salud</h1>
         <div className="flex gap-4">
           <ViewToggle view={view} onViewChange={setView} />
-          <button className="btn btn-primary flex items-center">
+          <button
+            className="btn btn-primary flex items-center"
+            onClick={() => {
+              setSelected(undefined);
+              setReadOnly(false);
+              setShowForm(true);
+            }}
+          >
             <Plus className="w-4 h-4 mr-2" />
             Nuevo Registro
           </button>
@@ -95,8 +107,26 @@ export default function HealthList() {
                   <td className="px-6 py-4">{record.type}</td>
                   <td className="px-6 py-4 text-sm text-gray-500">
                     <div className="flex space-x-2">
-                      <button className="text-blue-600 hover:text-blue-900">Ver</button>
-                      <button className="text-green-600 hover:text-green-900">Editar</button>
+                      <button
+                        className="text-blue-600 hover:text-blue-900"
+                        onClick={() => {
+                          setSelected(record);
+                          setReadOnly(true);
+                          setShowForm(true);
+                        }}
+                      >
+                        Ver
+                      </button>
+                      <button
+                        className="text-green-600 hover:text-green-900"
+                        onClick={() => {
+                          setSelected(record);
+                          setReadOnly(false);
+                          setShowForm(true);
+                        }}
+                      >
+                        Editar
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -110,6 +140,21 @@ export default function HealthList() {
         <div className="text-center py-12">
           <p className="text-gray-500">No se encontraron registros de salud.</p>
         </div>
+      )}
+
+      {showForm && (
+        <HealthForm
+          record={selected}
+          readOnly={readOnly}
+          onClose={() => setShowForm(false)}
+          onSave={(data) => {
+            if (selected) {
+              setRecords((prev) => prev.map((r) => (r.id === data.id ? data : r)));
+            } else {
+              setRecords((prev) => [...prev, { ...data, id: Date.now().toString() }]);
+            }
+          }}
+        />
       )}
     </div>
   );
