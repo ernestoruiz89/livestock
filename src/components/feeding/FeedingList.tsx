@@ -2,6 +2,7 @@ import React from 'react';
 import { Search, Plus, Calendar } from 'lucide-react';
 import type { FeedingRecord } from '../../types';
 import FeedingCard from './FeedingCard';
+import ViewToggle from '../ViewToggle';
 
 const MOCK_FEEDING: FeedingRecord[] = [
   {
@@ -27,6 +28,7 @@ const MOCK_FEEDING: FeedingRecord[] = [
 export default function FeedingList() {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [selectedDate, setSelectedDate] = React.useState('');
+  const [view, setView] = React.useState<'grid' | 'list'>('grid');
 
   const filteredRecords = MOCK_FEEDING.filter(record => {
     const matchesSearch = record.feed_type.toLowerCase().includes(searchTerm.toLowerCase());
@@ -38,10 +40,13 @@ export default function FeedingList() {
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Registro de Alimentación</h1>
-        <button className="btn btn-primary flex items-center">
-          <Plus className="w-4 h-4 mr-2" />
-          Nuevo Registro
-        </button>
+        <div className="flex gap-4">
+          <ViewToggle view={view} onViewChange={setView} />
+          <button className="btn btn-primary flex items-center">
+            <Plus className="w-4 h-4 mr-2" />
+            Nuevo Registro
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-col md:flex-row gap-4 mb-6">
@@ -67,11 +72,43 @@ export default function FeedingList() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredRecords.map((record) => (
-          <FeedingCard key={record.id} record={record} />
-        ))}
-      </div>
+      {view === 'grid' ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredRecords.map((record) => (
+            <FeedingCard key={record.id} record={record} />
+          ))}
+        </div>
+      ) : (
+        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Parcela</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tipo</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {filteredRecords.map((record) => (
+                <tr key={record.id} className="hover:bg-gray-50">
+                  <td className="px-6 py-4">{record.pasture_id}</td>
+                  <td className="px-6 py-4">{record.date}</td>
+                  <td className="px-6 py-4">{record.feed_type}</td>
+                  <td className="px-6 py-4">{record.quantity} kg</td>
+                  <td className="px-6 py-4 text-sm text-gray-500">
+                    <div className="flex space-x-2">
+                      <button className="text-blue-600 hover:text-blue-900">Ver</button>
+                      <button className="text-green-600 hover:text-green-900">Editar</button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       {filteredRecords.length === 0 && (
         <div className="text-center py-12">

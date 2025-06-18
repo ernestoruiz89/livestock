@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, LayoutDashboard, Users, Map, Wheat, Activity, Settings } from 'lucide-react';
+import { Menu, LayoutDashboard, Users, Map, Wheat, Activity, Settings, ListTodo } from 'lucide-react';
 
 interface NavbarProps {
   onNavigate: (view: string) => void;
@@ -15,6 +15,7 @@ export default function Navbar({ onNavigate, currentView }: NavbarProps) {
     { icon: Map, label: 'Parcelas', id: 'pastures' },
     { icon: Wheat, label: 'Alimentación', id: 'feeding' },
     { icon: Activity, label: 'Salud', id: 'health' },
+    { icon: ListTodo, label: 'Actividades', id: 'activities' },
     { icon: Settings, label: 'Configuración', id: 'settings' },
   ];
 

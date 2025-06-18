@@ -46,3 +46,10 @@ export interface HealthRecord {
   description: string;
   performed_by: string;
 }
+
+export interface Activity {
+  id: string;
+  title: string;
+  date: string;
+  type: string;
+}
