@@ -4,6 +4,7 @@ import type { Animal } from '../../types';
 import CattleCard from './CattleCard'; // reutilizamos el diseño para cualquier animal
 import { getDocList } from '../../api/erpnext';
 import ViewToggle from '../ViewToggle';
+import usePersistedView from '../../hooks/usePersistedView';
 import CattleForm from './forms/CattleForm';
 
 const MOCK_CATTLE: Animal[] = [
@@ -49,7 +50,7 @@ const statusLabels = {
 export default function CattleList() {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [statusFilter, setStatusFilter] = React.useState<Animal['status'] | 'all'>('all');
-  const [view, setView] = React.useState<'grid' | 'list'>('grid');
+  const [view, setView] = usePersistedView('cattle-view', 'grid');
   const [animals, setAnimals] = React.useState<Animal[]>(MOCK_CATTLE);
   const [showForm, setShowForm] = React.useState(false);
   const [selected, setSelected] = React.useState<Animal | undefined>();

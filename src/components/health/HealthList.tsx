@@ -4,6 +4,7 @@ import type { HealthRecord } from '../../types';
 import HealthCard from './HealthCard';
 import ViewToggle from '../ViewToggle';
 import HealthForm from './forms/HealthForm';
+import usePersistedView from '../../hooks/usePersistedView';
 
 const MOCK_HEALTH: HealthRecord[] = [
   {
@@ -27,7 +28,7 @@ const MOCK_HEALTH: HealthRecord[] = [
 export default function HealthList() {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [selectedDate, setSelectedDate] = React.useState('');
-  const [view, setView] = React.useState<'grid' | 'list'>('grid');
+  const [view, setView] = usePersistedView('health-view', 'grid');
   const [showForm, setShowForm] = React.useState(false);
   const [selected, setSelected] = React.useState<HealthRecord | undefined>();
   const [readOnly, setReadOnly] = React.useState(false);
