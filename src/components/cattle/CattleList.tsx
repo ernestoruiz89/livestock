@@ -119,7 +119,20 @@ export default function CattleList() {
       {view === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredCattle.map((cattle) => (
-            <CattleCard key={cattle.id} cattle={cattle} />
+            <CattleCard
+              key={cattle.id}
+              cattle={cattle}
+              onView={(data) => {
+                setSelected(data);
+                setReadOnly(true);
+                setShowForm(true);
+              }}
+              onEdit={(data) => {
+                setSelected(data);
+                setReadOnly(false);
+                setShowForm(true);
+              }}
+            />
           ))}
         </div>
       ) : (

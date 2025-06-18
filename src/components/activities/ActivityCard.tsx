@@ -4,6 +4,8 @@ import type { Activity } from '../../types';
 
 interface ActivityCardProps {
   activity: Activity;
+  onView?: (activity: Activity) => void;
+  onEdit?: (activity: Activity) => void;
 }
 
 const typeColors: Record<string, string> = {
@@ -12,7 +14,7 @@ const typeColors: Record<string, string> = {
   rotation: 'bg-purple-100 text-purple-800',
 };
 
-export default function ActivityCard({ activity }: ActivityCardProps) {
+export default function ActivityCard({ activity, onView, onEdit }: ActivityCardProps) {
   const color = typeColors[activity.type] || 'bg-gray-100 text-gray-800';
   return (
     <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
@@ -25,8 +27,18 @@ export default function ActivityCard({ activity }: ActivityCardProps) {
         <span className="text-sm">{activity.date}</span>
       </div>
       <div className="mt-4 pt-4 border-t flex justify-end space-x-2">
-        <button className="btn btn-secondary text-sm">Ver</button>
-        <button className="btn btn-primary text-sm">Editar</button>
+        <button
+          className="btn btn-secondary text-sm"
+          onClick={() => onView?.(activity)}
+        >
+          Ver
+        </button>
+        <button
+          className="btn btn-primary text-sm"
+          onClick={() => onEdit?.(activity)}
+        >
+          Editar
+        </button>
       </div>
     </div>
   );

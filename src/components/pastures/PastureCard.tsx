@@ -4,6 +4,8 @@ import type { Pasture } from '../../types';
 
 interface PastureCardProps {
   pasture: Pasture;
+  onView?: (pasture: Pasture) => void;
+  onEdit?: (pasture: Pasture) => void;
 }
 
 const statusColors = {
@@ -18,7 +20,7 @@ const statusLabels = {
   maintenance: 'Mantenimiento'
 };
 
-export default function PastureCard({ pasture }: PastureCardProps) {
+export default function PastureCard({ pasture, onView, onEdit }: PastureCardProps) {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
       <div className="flex justify-between items-start mb-4">
@@ -51,8 +53,18 @@ export default function PastureCard({ pasture }: PastureCardProps) {
       </div>
 
       <div className="mt-4 pt-4 border-t flex justify-end space-x-2">
-        <button className="btn btn-secondary text-sm">Ver Detalles</button>
-        <button className="btn btn-primary text-sm">Editar</button>
+        <button
+          className="btn btn-secondary text-sm"
+          onClick={() => onView?.(pasture)}
+        >
+          Ver Detalles
+        </button>
+        <button
+          className="btn btn-primary text-sm"
+          onClick={() => onEdit?.(pasture)}
+        >
+          Editar
+        </button>
       </div>
     </div>
   );

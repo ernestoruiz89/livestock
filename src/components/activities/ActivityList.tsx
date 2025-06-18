@@ -59,7 +59,20 @@ export default function ActivityList() {
       {view === 'grid' ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredActivities.map((activity) => (
-            <ActivityCard key={activity.id} activity={activity} />
+            <ActivityCard
+              key={activity.id}
+              activity={activity}
+              onView={(data) => {
+                setSelected(data);
+                setReadOnly(true);
+                setShowForm(true);
+              }}
+              onEdit={(data) => {
+                setSelected(data);
+                setReadOnly(false);
+                setShowForm(true);
+              }}
+            />
           ))}
         </div>
       ) : (
