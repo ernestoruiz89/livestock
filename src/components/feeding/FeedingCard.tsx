@@ -17,7 +17,7 @@ export default function FeedingCard({ record, onView, onEdit }: FeedingCardProps
           <p className="text-gray-600">{record.feed_type}</p>
         </div>
         <span className="text-sm px-2 py-1 bg-blue-100 text-blue-800 rounded-full">
-          {new Date(record.date).toLocaleDateString()}
+          {new Date(record.date + 'T00:00:00').toLocaleDateString()}
         </span>
       </div>
 
