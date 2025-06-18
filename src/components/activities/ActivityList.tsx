@@ -3,6 +3,7 @@ import { Search, Plus } from 'lucide-react';
 import type { Activity } from '../../types';
 import ActivityCard from './ActivityCard';
 import ViewToggle from '../ViewToggle';
+import ActivityForm from './forms/ActivityForm';
 
 const MOCK_ACTIVITIES: Activity[] = [
   { id: '1', title: 'Alimentación mañana', date: '2024-03-25', type: 'feeding' },
@@ -13,8 +14,12 @@ const MOCK_ACTIVITIES: Activity[] = [
 export default function ActivityList() {
   const [searchTerm, setSearchTerm] = React.useState('');
   const [view, setView] = React.useState<'grid' | 'list'>('grid');
+  const [showForm, setShowForm] = React.useState(false);
+  const [selected, setSelected] = React.useState<Activity | undefined>();
+  const [readOnly, setReadOnly] = React.useState(false);
+  const [activities, setActivities] = React.useState<Activity[]>(MOCK_ACTIVITIES);
 
-  const filteredActivities = MOCK_ACTIVITIES.filter((activity) =>
+  const filteredActivities = activities.filter((activity) =>
     activity.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -24,7 +29,14 @@ export default function ActivityList() {
         <h1 className="text-2xl font-bold">Programación de Actividades</h1>
         <div className="flex gap-4">
           <ViewToggle view={view} onViewChange={setView} />
-          <button className="btn btn-primary flex items-center">
+          <button
+            className="btn btn-primary flex items-center"
+            onClick={() => {
+              setSelected(undefined);
+              setReadOnly(false);
+              setShowForm(true);
+            }}
+          >
             <Plus className="w-4 h-4 mr-2" />
             Nueva Actividad
           </button>
@@ -77,8 +89,26 @@ export default function ActivityList() {
                   <td className="px-6 py-4">{activity.type}</td>
                   <td className="px-6 py-4 text-sm text-gray-500">
                     <div className="flex space-x-2">
-                      <button className="text-blue-600 hover:text-blue-900">Ver</button>
-                      <button className="text-green-600 hover:text-green-900">Editar</button>
+                      <button
+                        className="text-blue-600 hover:text-blue-900"
+                        onClick={() => {
+                          setSelected(activity);
+                          setReadOnly(true);
+                          setShowForm(true);
+                        }}
+                      >
+                        Ver
+                      </button>
+                      <button
+                        className="text-green-600 hover:text-green-900"
+                        onClick={() => {
+                          setSelected(activity);
+                          setReadOnly(false);
+                          setShowForm(true);
+                        }}
+                      >
+                        Editar
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -92,6 +122,21 @@ export default function ActivityList() {
         <div className="text-center py-12">
           <p className="text-gray-500">No se encontraron actividades programadas.</p>
         </div>
+      )}
+
+      {showForm && (
+        <ActivityForm
+          record={selected}
+          readOnly={readOnly}
+          onClose={() => setShowForm(false)}
+          onSave={(data) => {
+            if (selected) {
+              setActivities((prev) => prev.map((a) => (a.id === data.id ? data : a)));
+            } else {
+              setActivities((prev) => [...prev, { ...data, id: Date.now().toString() }]);
+            }
+          }}
+        />
       )}
     </div>
   );
